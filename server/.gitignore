@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+.Python
+
+# Environment variables & secrets
+*.env
+.env.*
+secrets.json
+
+# IDEs & editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+logs/
+
+# Uvicorn / Gunicorn related
+*.pid
+
+# Mypy / Pyright / Type-checking
+.mypy_cache/
+.pyright/
+
+# Coverage / Testing
+.coverage
+htmlcov/
+.tox/
+.nox/
+.cache/
+pytest_cache/
+
+# Pydantic cache
+__pydantic__/ 
+
+# Database
+*.sqlite3
+*.db
+*.sql
+
+# Docker
+*.container
+*.pid
+*.tar
+docker-compose.override.yml
+
+# Others
+*.lock
