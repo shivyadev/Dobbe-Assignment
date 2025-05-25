@@ -40,7 +40,7 @@ async def analyze_image(image: UploadFile = File(...)):
         if response.status_code == 200:
             return JSONResponse(status_code=200, content={
                 "base64Image": base64_image,
-                "predictions": response.json()
+                "annotations": response.json()
             })
         else:
             raise Exception(f"Request failed with status code {response.status_code}: {response.text}")

@@ -1,25 +1,22 @@
-import { Separator } from "./ui/separator";
-import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import axios from "axios";
-import { cn } from "@/lib/utils";
-import { useImageContext } from "@/context/ImageContext";
+import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 const supportedFormats = "DCM, RVG";
 
 interface Props {
-  setUploaded: React.Dispatch<React.SetStateAction<boolean>>;
+  isUploading: boolean;
+  onUpload: (formData: FormData) => void;
 }
 
-const Dropbox = ({ setUploaded }: Props) => {
+const Dropbox = ({ onUpload, isUploading }: Props) => {
   const [dragging, setDragging] = useState<boolean>(false);
-  const [uploading, setUploading] = useState<boolean>(false);
-  const { setImageBase64, setPredictions } = useImageContext();
 
-  const handleUpload = async (acceptedFiles: File[]) => {
+  const handleUpload = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
 
     if (!file) {
@@ -32,38 +29,7 @@ const Dropbox = ({ setUploaded }: Props) => {
     const formData = new FormData();
     formData.append("image", file);
 
-    try {
-      setUploading(true);
-
-      // Upload to server and get base64 response
-      const response = await axios.post("/roboflow/detect", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      // Assuming your backend returns the base64 image in the response
-      // Adjust the response.data path based on your actual API response structure
-      const base64Image = response.data.base64Image;
-      const predictions = response.data.predictions;
-
-      if (base64Image && predictions) {
-        setImageBase64(base64Image);
-        setPredictions(predictions);
-      }
-
-      setUploaded(true);
-      toast("Success", {
-        description: "Image uploaded successfully",
-      });
-    } catch (err) {
-      toast("Something went wrong", {
-        description: "Upload Failed",
-      });
-      console.error(err);
-    } finally {
-      setUploading(false);
-    }
+    onUpload(formData);
   };
 
   const { getRootProps, getInputProps, open } = useDropzone({
@@ -101,14 +67,14 @@ const Dropbox = ({ setUploaded }: Props) => {
       <div
         {...getRootProps({
           className: cn(
-            "py-24 px-56 mb-3 border-2 border-blue-500 dark:border-gray-500 rounded-2xl bg-gray-100 flex justify-center items-center flex-col",
+            "py-16 px-56 mb-3 border-2 border-blue-500 dark:border-gray-500 rounded-2xl bg-gray-100 flex justify-center items-center flex-col",
             dragging ? "bg-blue-100" : "border-dashed"
           ),
         })}
       >
         <input {...getInputProps()} />
 
-        {uploading ? (
+        {isUploading ? (
           <div className="flex w-full flex-col items-center justify-center gap-4">
             <Loader className="h-10 w-10 animate-spin text-blue-500" />
             <p className="tracking-normal">Uploading your image</p>

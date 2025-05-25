@@ -22,22 +22,31 @@ export interface PredictionResponse {
   predictions: Prediction[];
 }
 
+export interface DetectResponse {
+  base64Image: string;
+  annotations: PredictionResponse;
+}
+
 interface ImageContextType {
   imageBase64: string;
   setImageBase64: React.Dispatch<React.SetStateAction<string>>;
-  predictions: PredictionResponse[];
-  setPredictions: React.Dispatch<React.SetStateAction<PredictionResponse[]>>;
+  annotations: PredictionResponse | null;
+  setAnnotations: React.Dispatch<
+    React.SetStateAction<PredictionResponse | null>
+  >;
 }
 
-const ImageContext = createContext<ImageContextType | undefined>(undefined);
+const ImageContext = createContext<ImageContextType | null>(null);
 
 export const ImageProvider = ({ children }: { children: React.ReactNode }) => {
   const [imageBase64, setImageBase64] = useState<string>("");
-  const [predictions, setPredictions] = useState<PredictionResponse[]>([]);
+  const [annotations, setAnnotations] = useState<PredictionResponse | null>(
+    null
+  );
 
   return (
     <ImageContext.Provider
-      value={{ imageBase64, setImageBase64, predictions, setPredictions }}
+      value={{ imageBase64, setImageBase64, annotations, setAnnotations }}
     >
       {children}
     </ImageContext.Provider>
