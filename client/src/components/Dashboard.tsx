@@ -3,13 +3,13 @@ import Visualizer from "./Visualizer";
 
 const Dashboard = () => {
   return (
-    <div className="grid grid-cols-[1fr_1px_1fr] w-screen h-screen bg-amber-200">
+    <div className="w-screen h-screen bg-amber-200 grid grid-cols-1 lg:grid-cols-[1fr_1px_1fr]">
       <div className="bg-white">
         <Visualizer />
       </div>
 
-      {/* Vertical Separator */}
-      <div className="bg-gray-400 w-px h-full" />
+      {/* Vertical Separator (only shown on large screens) */}
+      <div className="hidden lg:block bg-gray-400 w-px h-full" />
 
       <div className="bg-white">
         <Analysis />

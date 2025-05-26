@@ -28,7 +28,9 @@ const Visualizer = () => {
             <Dropbox isUploading={isLoading} onUpload={handleUpload} />
           </div>
         ) : (
-          <BoundingBox />
+          <div className="p-8 lg:p-0">
+            <BoundingBox />
+          </div>
         )}
       </div>
     </div>

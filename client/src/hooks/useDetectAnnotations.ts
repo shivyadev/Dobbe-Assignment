@@ -25,9 +25,6 @@ export function useDetectAnnotations() {
 
       setImageBase64(data.base64Image);
       setAnnotations(data.annotations);
-      toast("Success", {
-        description: "Image uploaded successfully",
-      });
     } catch {
       setIsError(true);
       toast("Something went wrong", {

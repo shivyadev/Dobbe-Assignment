@@ -41,7 +41,7 @@ const BoundingBox = () => {
   }, []);
 
   return (
-    <div className="bg-red-100 relative" ref={containerRef}>
+    <div className="relative" ref={containerRef}>
       <img
         ref={imgRef}
         onLoad={handleImageLoad}

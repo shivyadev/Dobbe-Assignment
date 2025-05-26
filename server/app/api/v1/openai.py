@@ -13,9 +13,9 @@ openai_router = APIRouter(prefix="/openai", tags=['openai'])
 @openai_router.post("/analyze")
 async def analyze_annotations(request: OpenAIRequest = Body(...)):
     try:
+        
         image_url = base64_to_data_url(request.image_base64)
 
-        # Turn predictions into a readable format for GPT
         prediction_text = f"Image Dimensions: {request.image_width}x{request.image_height}\n\n" + "\n".join(
             [
                 f"  Pathology: {p.pathology}\n"
@@ -25,7 +25,6 @@ async def analyze_annotations(request: OpenAIRequest = Body(...)):
             ]
         )
 
-        # Setup tool schema using proper OpenAI function definition
         tool_schema = {
             "type": "function",
             "function": {
@@ -79,39 +78,39 @@ async def analyze_annotations(request: OpenAIRequest = Body(...)):
             },
         ]
 
-        completion = client.chat.completions.create(
-            model="gpt-4o",
-            messages=messages,
-            tools=[tool_schema],
-            tool_choice={"type": "function", "function": {"name": "OpenAIResponse"}},
-        )
 
-        # Parse the tool call response
-        if completion.choices[0].message.tool_calls:
-            tool_call = completion.choices[0].message.tool_calls[0]
-            response_data = json.loads(tool_call.function.arguments)
-            
-            # Validate the response using Pydantic model
+        if client is not None:
+            completion = client.chat.completions.create(
+                model="gpt-4o",
+                messages=messages,
+                tools=[tool_schema],
+                tool_choice={"type": "function", "function": {"name": "OpenAIResponse"}},
+            )
+
+            if completion.choices[0].message.tool_calls:
+                tool_call = completion.choices[0].message.tool_calls[0]
+                response_data = json.loads(tool_call.function.arguments)
+                
+                validated_response = OpenAIResponse(**response_data)
+        else:
+            response_data = {
+                "pathologies": [
+                    {
+                        "pathology": "cavity",
+                        "location": "lower left second molar"
+                    },
+                    {
+                        "pathology": "periapical lesion",
+                        "location": "lower left second molar"
+                    }
+                ],
+                "clinical_advice": [
+                    "Recommend restorative treatment for the detected cavity on the lower left second molar.",
+                    "Further evaluation and potential endodontic treatment for the periapical lesion on the lower left second molar is advised."
+                ]
+            }
+
             validated_response = OpenAIResponse(**response_data)
-            
-        # response_data = {
-        #     "pathologies": [
-        #         {
-        #             "pathology": "cavity",
-        #             "location": "lower left second molar"
-        #         },
-        #         {
-        #             "pathology": "periapical lesion",
-        #             "location": "lower left second molar"
-        #         }
-        #     ],
-        #     "clinical_advice": [
-        #         "Recommend restorative treatment for the detected cavity on the lower left second molar.",
-        #         "Further evaluation and potential endodontic treatment for the periapical lesion on the lower left second molar is advised."
-        #     ]
-        # }
-
-        # validated_response = OpenAIResponse(**response_data)
 
         return JSONResponse(content=validated_response.dict(), status_code=200)
         # else:

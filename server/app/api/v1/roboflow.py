@@ -8,6 +8,10 @@ import base64
 
 roboflow_router = APIRouter(prefix="/roboflow", tags=["Roboflow"])
 
+@roboflow_router.get("/test")
+def test():
+    return JSONResponse(content="Hello")
+
 @roboflow_router.post("/detect")
 async def analyze_image(image: UploadFile = File(...)):
     if not image.filename.lower().endswith((".dcm", ".rvg")):
@@ -39,12 +43,14 @@ async def analyze_image(image: UploadFile = File(...)):
 
         response_data = response.json()
 
+        print(response_data)
+
         predictions = response_data.get("predictions", [])
 
         for prediction in predictions:  
             if "class" in prediction:
                 prediction["pathology"] = prediction.pop("class")
-                
+
         if response.status_code == 200:
             return JSONResponse(status_code=200, content={
                 "base64Image": base64_image,
@@ -55,4 +61,5 @@ async def analyze_image(image: UploadFile = File(...)):
 
 
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=f"Image processing failed: {str(e)}")
