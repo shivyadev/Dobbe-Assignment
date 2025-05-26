@@ -11,4 +11,7 @@ class Prediction(BaseModel):
     detection_id: str
 
 class OpenAIRequest(BaseModel):
+    image_base64: str
+    image_width: int
+    image_height: int
     prediction: list[Prediction]

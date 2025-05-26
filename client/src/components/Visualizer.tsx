@@ -1,11 +1,18 @@
 import { useDetectAnnotations } from "@/hooks/useDetectAnnotations";
-import { useState } from "react";
+import { useFetchAnalysis } from "@/hooks/useFetchAnalysis";
+import { useEffect, useState } from "react";
 import BoundingBox from "./BoundingBox";
 import Dropbox from "./Dropbox";
 
 const Visualizer = () => {
   const [isUploaded, setIsUploaded] = useState(false);
   const { detect, isLoading } = useDetectAnnotations();
+  const { fetchAnalysis } = useFetchAnalysis();
+
+  useEffect(() => {
+    if (!isUploaded) return;
+    fetchAnalysis();
+  }, [isUploaded, fetchAnalysis]);
 
   async function handleUpload(formData: FormData) {
     await detect(formData);

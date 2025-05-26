@@ -1,4 +1,5 @@
-import { useImageContext, type DetectResponse } from "@/context/ImageContext";
+import { useImageContext } from "@/context/ImageContext";
+import type { DetectResponse } from "@/lib/types";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "sonner";

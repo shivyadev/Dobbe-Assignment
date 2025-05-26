@@ -37,10 +37,18 @@ async def analyze_image(image: UploadFile = File(...)):
 
         base64_image = base64.b64encode(jpeg_image.getvalue()).decode("utf-8")
 
+        response_data = response.json()
+
+        predictions = response_data.get("predictions", [])
+
+        for prediction in predictions:  
+            if "class" in prediction:
+                prediction["pathology"] = prediction.pop("class")
+                
         if response.status_code == 200:
             return JSONResponse(status_code=200, content={
                 "base64Image": base64_image,
-                "annotations": response.json()
+                "annotations": response_data
             })
         else:
             raise Exception(f"Request failed with status code {response.status_code}: {response.text}")

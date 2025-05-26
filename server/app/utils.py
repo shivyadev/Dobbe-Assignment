@@ -36,3 +36,7 @@ def convert_dicom_bytes_to_jpeg(file_bytes: bytes) -> io.BytesIO:
     img.save(jpeg_buffer, format="JPEG")
     jpeg_buffer.seek(0)
     return jpeg_buffer
+
+def base64_to_data_url(base64_str: str) -> str:
+    return f"data:image/png;base64,{base64_str}"
+

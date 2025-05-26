@@ -1,40 +1,9 @@
+import type {
+  AnalysisResponse,
+  ImageContextType,
+  PredictionResponse,
+} from "@/lib/types";
 import React, { createContext, useContext, useState } from "react";
-
-export interface Prediction {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  confidence: number;
-  class: string;
-  class_id: number;
-  detection_id: string;
-}
-
-// Complete prediction response interface
-export interface PredictionResponse {
-  inference_id: string;
-  time: number;
-  image: {
-    width: number;
-    height: number;
-  };
-  predictions: Prediction[];
-}
-
-export interface DetectResponse {
-  base64Image: string;
-  annotations: PredictionResponse;
-}
-
-interface ImageContextType {
-  imageBase64: string;
-  setImageBase64: React.Dispatch<React.SetStateAction<string>>;
-  annotations: PredictionResponse | null;
-  setAnnotations: React.Dispatch<
-    React.SetStateAction<PredictionResponse | null>
-  >;
-}
 
 const ImageContext = createContext<ImageContextType | null>(null);
 
@@ -43,10 +12,21 @@ export const ImageProvider = ({ children }: { children: React.ReactNode }) => {
   const [annotations, setAnnotations] = useState<PredictionResponse | null>(
     null
   );
+  const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <ImageContext.Provider
-      value={{ imageBase64, setImageBase64, annotations, setAnnotations }}
+      value={{
+        imageBase64,
+        setImageBase64,
+        annotations,
+        setAnnotations,
+        analysis,
+        setAnalysis,
+        isLoading,
+        setIsLoading,
+      }}
     >
       {children}
     </ImageContext.Provider>

@@ -18,7 +18,7 @@ const BoundingBox = () => {
       setImgDims({ width: rect.width, height: rect.height });
 
       const classMap = annotations?.predictions.reduce((acc, curr) => {
-        acc[curr.class] = getRandomTailwind500Color();
+        acc[curr.pathology] = getRandomTailwind500Color();
         return acc;
       }, {} as Record<string, string>);
 
@@ -76,7 +76,7 @@ const BoundingBox = () => {
                 top: `${top}px`,
                 width: `${width}px`,
                 height: `${height}px`,
-                border: `2px solid ${classColors![pred.class]}`,
+                border: `2px solid ${classColors![pred.pathology]}`,
                 pointerEvents: "none",
               }}
             >
@@ -84,10 +84,10 @@ const BoundingBox = () => {
                 className="absolute -top-6 left-0 text-white text-xs p-1 rounded whitespace-nowrap"
                 style={{
                   pointerEvents: "auto",
-                  background: classColors![pred.class],
+                  background: classColors![pred.pathology],
                 }}
               >
-                {pred.class} ({(pred.confidence * 100).toFixed(0)}%)
+                {pred.pathology} ({(pred.confidence * 100).toFixed(0)}%)
               </span>
             </div>
           );
